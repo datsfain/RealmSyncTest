@@ -405,6 +405,8 @@ GameObject:
   - component: {fileID: 241007184}
   - component: {fileID: 241007183}
   - component: {fileID: 241007182}
+  - component: {fileID: 241007187}
+  - component: {fileID: 241007186}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -497,6 +499,40 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &241007186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241007181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25e9b118e49b81147ba9eed3b75d1d28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 634758487}
+  targetObject: {fileID: 148169125}
+  sourcePropertyName: Hearts
+  targetPropertyPath: TextMeshProUGUI/set_text
+  invertBoolean: 0
+--- !u!114 &241007187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241007181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25e9b118e49b81147ba9eed3b75d1d28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 634758487}
+  targetObject: {fileID: 1434905969}
+  sourcePropertyName: Coins
+  targetPropertyPath: TextMeshProUGUI/set_text
+  invertBoolean: 0
 --- !u!1 &482972797
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +569,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 83, y: 230}
+  m_AnchoredPosition: {x: -17, y: 244}
   m_SizeDelta: {x: 399.9777, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &482972799

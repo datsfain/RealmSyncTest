@@ -1,12 +1,6 @@
-using Realms;
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class DataSyncer : MonoBehaviour
 {
@@ -19,16 +13,13 @@ public class DataSyncer : MonoBehaviour
 
     private object propertyChangeTarget;
     private MethodInfo method;
+    private PropertyInfo property;
 
     private void OnEnable() => StartCoroutine(LinkDataSource());
 
     private void InvokeMethod()
     {
-        object value =
-            data.userData
-            .GetType()
-            .GetProperty(sourcePropertyName)
-            .GetValue(data.userData);
+        object value = property.GetValue(data.userData);
 
         if (!(value is bool)) 
             value = value.ToString();
@@ -48,15 +39,13 @@ public class DataSyncer : MonoBehaviour
 
         bool isGameObjectMethod = methodOwnerName == "gameObject";
 
-        propertyChangeTarget = isGameObjectMethod ?
+        propertyChangeTarget = isGameObjectMethod ? 
             (object)targetObject : (object)targetObject.GetComponent(methodOwnerName);
 
         method = propertyChangeTarget.GetType().GetMethod(methodName);
+        property = data.userData.GetType().GetProperty(sourcePropertyName);
 
         data.userData.PropertyChanged += (_, __) => InvokeMethod();
         InvokeMethod();
     }
-
-
-
 }
