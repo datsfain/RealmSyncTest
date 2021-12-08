@@ -14,6 +14,7 @@ public class DataSyncer : MonoBehaviour
 
     [HideInInspector] public string sourcePropertyName;
     [HideInInspector] public string targetPropertyPath;
+    public bool invertBoolean;
 
     private void OnEnable() => StartCoroutine(LinkDataSource());
 
@@ -23,22 +24,61 @@ public class DataSyncer : MonoBehaviour
 
         string[] pieces = targetPropertyPath.Split(new char[] { '/' });
         string componentName = pieces[0];
-        string setterName = pieces[1];
+        string methodName = pieces[1];
 
-        var component = targetObject.GetComponent(componentName);
+        bool isGameObjectMethod = componentName == "gameObject";
 
-        PropertyChangedEventHandler handler =
+        UnityEngine.Component component = null;
+        if (!isGameObjectMethod)
+            component = targetObject.GetComponent(componentName);
+
+        PropertyChangedEventHandler handler;
+
+        if (!isGameObjectMethod)
+        {
+            handler =
             (_, __) =>
-            {
-                component.GetType().GetMethod(setterName).Invoke(component,
-                new object[] {
-                data.userData
-                .GetType()
-                .GetProperty(sourcePropertyName)
-                .GetValue(data.userData)
-                .ToString()
-                });
-            };
+                {
+                    object value = 
+                    data.userData
+                    .GetType()
+                    .GetProperty(sourcePropertyName)
+                    .GetValue(data.userData);
+
+                    if (!(value is string) && !(value is bool))
+                        value = value.ToString();
+
+                    if(value is bool && invertBoolean)
+                    {
+                        value = !((bool)value);
+
+                    }
+
+                    component.GetType().GetMethod(methodName).Invoke(component, new object[] { value });
+                };
+        }
+        else
+        {
+            handler =
+                (_, __) =>
+                {
+                    object value = 
+                    data.userData
+                    .GetType()
+                    .GetProperty(sourcePropertyName)
+                    .GetValue(data.userData);
+
+                    if (!(value is string) && !(value is bool))
+                        value = value.ToString();
+
+                    if (value is bool && invertBoolean)
+                    {
+                        value = !((bool)value);
+                    }
+
+                    typeof(GameObject).GetMethod(methodName).Invoke(targetObject, new object[] { value });
+                };
+        }
 
         data.userData.PropertyChanged += handler;
         handler.Invoke(null, null);

@@ -58,26 +58,26 @@ public class DataSyncerCustomEditor : Editor
         {
             string compontentName = c.GetType().Name;
 
-            foreach (var f in c.GetType().GetProperties())
-            {
-                foreach (var a in f.GetAccessors())
-                {
-                    if (a.GetParameters().Length == 1 && a.GetParameters()[0].ParameterType == typeof(string))
-                    {
-                        options.Add($"{compontentName}/{a.Name}");
-                    }
-                }
-            }
-
             foreach(var f in c.GetType().GetMethods())
             {
                 if(f.GetParameters().Length == 1
-                    && f.GetParameters()[0].ParameterType == typeof(string)
+                    && (f.GetParameters()[0].ParameterType == typeof(string) || f.GetParameters()[0].ParameterType == typeof(bool) )
                     && f.ReturnType == typeof(void))
                 {
                     options.Add($"{compontentName}/{f.Name}");
                 }
             }
+
+            foreach(var f in typeof(GameObject).GetMethods())
+            {
+                if (f.GetParameters().Length == 1
+                    && f.GetParameters()[0].ParameterType == typeof(bool)
+                    && f.ReturnType == typeof(void))
+                {
+                    options.Add($"gameObject/{f.Name}");
+                }
+            }
+
 
         }
 

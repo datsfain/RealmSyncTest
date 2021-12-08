@@ -18,6 +18,9 @@ public class UserDatum : RealmObject
     public int? Coins { get; set; }
     [MapTo("hearts")]
     public int? Hearts { get; set; }
+
+    [MapTo("has_premium")]
+    public bool? HasPremium { get; set; }
 }
 public class RealmDataSync : MonoBehaviour
 {
@@ -55,7 +58,8 @@ public class RealmDataSync : MonoBehaviour
                     Coins = 0,
                     Hearts = 0,
                     Id = ObjectId.GenerateNewId(),
-                    Partition = _user.Id
+                    Partition = _user.Id,
+                    HasPremium = false
                 });
             });
         }
