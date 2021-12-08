@@ -19,7 +19,7 @@ public class DataSyncerCustomEditor : Editor
     {
         base.OnInspectorGUI();
 
-        dataSyncer = (DataSyncer)base.target;
+        dataSyncer = (DataSyncer)target;
 
         DrawSourcePropertyPopup();
         DrawTargetPropertyPopup();
@@ -44,8 +44,8 @@ public class DataSyncerCustomEditor : Editor
         selectedSourcePropertyIndex = EditorGUILayout.Popup("Source Property", selectedSourcePropertyIndex, options.ToArray());
         if (selectedSourcePropertyIndex == -1) return;
 
-
-        serializedObject.FindProperty(nameof(dataSyncer.sourcePropertyName)).stringValue = options[selectedSourcePropertyIndex];
+        SerializedProperty property = serializedObject.FindProperty(nameof(dataSyncer.sourcePropertyName));
+        property.stringValue = options[selectedSourcePropertyIndex];
     }
 
     public void DrawTargetPropertyPopup()
@@ -54,44 +54,52 @@ public class DataSyncerCustomEditor : Editor
 
         var options = new List<string>();
 
-        foreach (var c in dataSyncer.targetObject.GetComponents<Component>())
+        var components = dataSyncer.targetObject.GetComponents<Component>();
+
+        foreach (var component in components)
         {
-            string compontentName = c.GetType().Name;
+            var componentType = component.GetType();
+            var compontentName = componentType.Name;
 
-            foreach(var f in c.GetType().GetMethods())
-            {
-                if(f.GetParameters().Length == 1
-                    && (f.GetParameters()[0].ParameterType == typeof(string) || f.GetParameters()[0].ParameterType == typeof(bool) )
-                    && f.ReturnType == typeof(void))
-                {
-                    options.Add($"{compontentName}/{f.Name}");
-                }
-            }
-
-            foreach(var f in typeof(GameObject).GetMethods())
-            {
-                if (f.GetParameters().Length == 1
-                    && f.GetParameters()[0].ParameterType == typeof(bool)
-                    && f.ReturnType == typeof(void))
-                {
-                    options.Add($"gameObject/{f.Name}");
-                }
-            }
-
-
+            FillMethodPathsList(componentType, compontentName, ref options);
         }
 
-        selectedTargetPropertyIndex = options.IndexOf(dataSyncer.targetPropertyPath);
+        FillMethodPathsList(typeof(GameObject), "gameObject", ref options);
 
+
+        selectedTargetPropertyIndex = options.IndexOf(dataSyncer.targetPropertyPath);
 
         selectedTargetPropertyIndex = EditorGUILayout.Popup("Target Property",
             selectedTargetPropertyIndex, options.ToArray());
 
         if (selectedTargetPropertyIndex == -1) return;
 
-        serializedObject.FindProperty(nameof(dataSyncer.targetPropertyPath))
-            .stringValue = options[selectedTargetPropertyIndex];
+        SerializedProperty property = serializedObject.FindProperty(nameof(dataSyncer.targetPropertyPath));
+        property.stringValue = options[selectedTargetPropertyIndex];
 
+    }
+
+    private void FillMethodPathsList(Type type, string methodOwner, ref List<string> methodPaths)
+    {
+        var methods = type.GetMethods();
+
+        foreach (var method in methods)
+        {
+            var parameters = method.GetParameters();
+            bool hasOneParameter = parameters.Length == 1;
+
+            if (!hasOneParameter) continue;
+
+            var parameterType = parameters[0].ParameterType;
+
+            bool isParamaterStringOrBool = parameterType == typeof(string) || parameterType == typeof(bool);
+            bool isReturnTypeVoid = method.ReturnType == typeof(void);
+
+            if (isParamaterStringOrBool && isReturnTypeVoid)
+            {
+                methodPaths.Add($"{methodOwner}/{method.Name}");
+            }
+        }
     }
 
 }
