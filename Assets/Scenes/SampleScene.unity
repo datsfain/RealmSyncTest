@@ -427,7 +427,7 @@ MonoBehaviour:
   data: {fileID: 634758487}
   targetObject: {fileID: 482972797}
   sourcePropertyName: HasPremium
-  targetPropertyPath: gameObject/set_active
+  targetPropertyPath: gameObject/SetActive
   invertBoolean: 0
 --- !u!114 &241007183
 MonoBehaviour:
