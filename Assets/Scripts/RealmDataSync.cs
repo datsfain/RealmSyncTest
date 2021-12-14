@@ -10,17 +10,18 @@ public class UserDatum : RealmObject
 {
     [PrimaryKey]
     [MapTo("_id")]
-    public ObjectId? Id { get; set; }
+    public ObjectId Id { get; set; }
     [MapTo("_partition")]
     [Required]
     public string Partition { get; set; }
     [MapTo("coins")]
-    public int? Coins { get; set; }
+    public int Coins { get; set; }
+    [MapTo("has_uncollected_rewards")]
+    public bool HasUncollectedRewards { get; set; }
     [MapTo("hearts")]
-    public int? Hearts { get; set; }
-
-    [MapTo("has_premium")]
-    public bool? HasPremium { get; set; }
+    public int Hearts { get; set; }
+    [MapTo("rewards_to_collect")]
+    public int RewardsToCollect { get; set; }
 }
 public class RealmDataSync : MonoBehaviour
 {
@@ -59,8 +60,9 @@ public class RealmDataSync : MonoBehaviour
                     Hearts = 0,
                     Id = ObjectId.GenerateNewId(),
                     Partition = _user.Id,
-                    HasPremium = false
-                });
+                    HasUncollectedRewards = false,
+                    RewardsToCollect = 0
+                }) ;
             });
         }
 

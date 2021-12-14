@@ -9,7 +9,8 @@ public class DataSyncer : MonoBehaviour
 
     [HideInInspector] public string sourcePropertyName;
     [HideInInspector] public string targetPropertyPath;
-    public bool invertBoolean;
+
+    [SerializeField] private bool invertBoolean;
 
     private object propertyChangeTarget;
     private MethodInfo method;
